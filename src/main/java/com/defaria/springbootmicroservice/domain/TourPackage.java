@@ -2,22 +2,20 @@ package com.defaria.springbootmicroservice.domain;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.Hibernate;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
+
 import java.util.Objects;
 
-@Entity
+@Document
 @Setter
 @Getter
 public class TourPackage{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
     private String code;
 
-    @Column
     private String name;
 
 
@@ -30,15 +28,23 @@ public class TourPackage{
     }
 
     @Override
+    public String toString() {
+        return "TourPackage{" +
+                "code='" + code + '\'' +
+                ", name='" + name + '\'' +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         TourPackage that = (TourPackage) o;
-        return code != null && Objects.equals(code, that.code);
+        return Objects.equals(code, that.code) && Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        return Objects.hash(code, name);
     }
 }

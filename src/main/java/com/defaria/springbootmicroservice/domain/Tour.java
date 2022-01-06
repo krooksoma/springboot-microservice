@@ -1,82 +1,48 @@
 package com.defaria.springbootmicroservice.domain;
 
 import lombok.*;
-import org.hibernate.Hibernate;
-
-import javax.persistence.*;
-import java.math.BigDecimal;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
+import java.util.Map;
 import java.util.Objects;
 
 
 @Getter
 @Setter
-@ToString
-@RequiredArgsConstructor
-@Entity
+@Document
 public class Tour {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
-    private String code;
+    private String id;
 
-    @Column
+    @Indexed
     private String title;
 
-    @Column(length = 2000)
-    private String description;
+    @Indexed
+    private String tourPackageCode;
 
-    @Column(length = 2000)
-    private String blurb;
+    private String tourPackageName;
 
-    @Column
-    private BigDecimal price;
+    private Map<String, String> details;
 
-    @Column
-    private String duration;
-
-    @Column(length = 2000)
-    private String bullets;
-
-    @Column
-    private String keywords;
-
-    @ManyToOne
-    private TourPackage tourPackage;
-
-    @Column
-    @Enumerated
-    private Difficulty difficulty;
-
-    @Column
-    @Enumerated
-    private Region region;
-
-    public Tour(String title, String description, String blurb, BigDecimal price, String duration,
-                String bullets, String keywords, TourPackage tourPackage,
-                Difficulty difficulty, Region region) {
+    public Tour(String title, TourPackage tourPackage, Map<String, String> details){
         this.title = title;
-        this.description = description;
-        this.blurb = blurb;
-        this.price = price;
-        this.duration = duration;
-        this.bullets = bullets;
-        this.keywords = keywords;
-        this.tourPackage = tourPackage;
-        this.difficulty = difficulty;
-        this.region = region;
+        this.tourPackageCode = tourPackage.getCode();
+        this.tourPackageName = tourPackage.getName();
+        this.details = details;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         Tour tour = (Tour) o;
-        return code != null && Objects.equals(code, tour.code);
+        return Objects.equals(id, tour.id) && Objects.equals(title, tour.title) && Objects.equals(tourPackageCode, tour.tourPackageCode) && Objects.equals(tourPackageName, tour.tourPackageName) && Objects.equals(details, tour.details);
     }
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        return Objects.hash(id, title, tourPackageCode, tourPackageName, details);
     }
 }
